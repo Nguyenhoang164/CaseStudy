@@ -10,23 +10,21 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
-<AnchorPane id="AnchorPane" prefHeight="480.0" prefWidth="640.0" xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.casestudy.ControllerChat">
-     <children>
-         <VBox alignment="TOP_CENTER" prefHeight="423.0" prefWidth="341.0" AnchorPane.topAnchor="20.0" AnchorPane.bottomAnchor="40.0" AnchorPane.rightAnchor="100.0" AnchorPane.leftAnchor="100.0" >
-             <children>
-                 <Label  alignment="TOP_LEFT" text="Chat Demo" >
-                     <font>
-                         <Font name="system" size="18.0" />
-                     </font>
-                    </Label>
-                 <Label fx:id="ChatInput" prefWidth="400.0" prefHeight="400.0"/>
-                 <HBox alignment="BASELINE_CENTER" spacing="11.0">
-                     <TextField fx:id="Item" prefWidth="346.0" />
-                     <Button fx:id="Add" text="Add" onAction="#AddMessage"/>
-                 </HBox>
+<AnchorPane id="AnchorPane" prefHeight="480.0" prefWidth="640.0" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.casestudy.ServerController">
+    <VBox alignment="TOP_CENTER" prefHeight="423.0" prefWidth="341.0" AnchorPane.topAnchor="20.0"
+          AnchorPane.bottomAnchor="40.0" AnchorPane.rightAnchor="100.0" AnchorPane.leftAnchor="100.0">
 
-             </children>
+        <Label alignment="TOP_LEFT" text="Chat Demo">
+            <font>
+                <Font name="system" size="18.0"/>
+            </font>
+        </Label>
+        <Label fx:id="ChatInput" prefWidth="400.0" prefHeight="400.0"/>
+        <HBox alignment="BASELINE_CENTER" spacing="11.0">
+            <TextField fx:id="Item" prefWidth="346.0"/>
+            <Button fx:id="Add" text="Add" onAction="#AddMessage"/>
+        </HBox>
 
-         </VBox>
-     </children>
+    </VBox>
 </AnchorPane>
