@@ -1,62 +1,124 @@
 package com.example.casestudy;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.*;
-import java.util.ResourceBundle;
+import java.sql.*;
 
-public class ControllerChat implements Initializable {
-    @FXML
-    private VBox VboxMain;
-    @FXML
-    private Label TileLbl;
-    @FXML
-    private ListView<String> listBoxMain;
+public class ControllerChat {
     @FXML
     private TextField Item;
     @FXML
     private Button Add;
-    final ObservableList<String> list = FXCollections.observableArrayList();;
-    int ClientPort = 8080;
-    String ClientIP = "localhost";
+    @FXML
+    private Label ChatInput;
     String Message;
-    @FXML
-    public void ConnectToServer() throws IOException {
-        DatagramSocket ClientSocket = null;
-        DatagramPacket ClientSendMessage = null;
-        DatagramPacket ClientReadMessage = null;
-        byte [] ClientSend = null;
-        while (true){
-            //push Message to Server
-            ClientSocket = new DatagramSocket();
-            ClientSend = Message.getBytes();
-            InetAddress inetAddress = InetAddress.getByName(ClientIP);
-            ClientSendMessage = new DatagramPacket(ClientSend,ClientSend.length,inetAddress,ClientPort);
-            ClientSocket.send(ClientSendMessage);
+    private String localhost = "localhost";
+    private String dbname = "Message_data";
+    private String username = "root";
+    private String password = "l";
+    private String URL = "jdbc:mysql://"+ localhost+"/"+dbname;
+    String message;
 
-        }
-
-    }
     @FXML
-    public void AddMessage(){
+    public void AddMessage() throws SQLException {
+        this.ChatInput.setText(" ");
         this.Message = this.Item.getText();
 
-        list.add("Client 1 : " + Message);
-        Alert alertConfirm = new Alert(Alert.AlertType.INFORMATION);
-        alertConfirm.setHeaderText("thanh cong");
-        alertConfirm.setContentText("tin nhan da duoc gui");
-        alertConfirm.show();
-        this.Item.setText("");
-    }
+        //Connected to Database
+        Connection connection = DriverManager.getConnection(URL,username,password);
+        String query = "insert into MessageDatabase(Message) values (?)";
+        PreparedStatement preparedStatement = null;
+        preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setString(1,"Client :" + this.Message);
+        int row = preparedStatement.executeUpdate();
+        if (row != 0){
+            Alert alertConfirm = new Alert(Alert.AlertType.INFORMATION);
+            alertConfirm.setHeaderText("thanh cong");
+            alertConfirm.setContentText("tin nhan da duoc gui");
+            alertConfirm.show();
+            this.Item.setText("");
+        }else{
+            System.out.println("loi");
+        }
+        this.message = "";
+            String queryOut = "Select Message from MessageDatabase";
+            Statement statement = null;
+            statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(queryOut);
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        listBoxMain.setItems(list);
+            while (resultSet.next()) {
+                this.message += resultSet.getString("Message") + "\n";
+            }
+
+            for (int y = 0; y < this.message.length(); y++) {
+                this.ChatInput.setText(message);
+            }
+        }
+//      @FXML
+//      public void AddMessage() throws IOException, SQLException {
+//          this.ChatInput.setText(" ");
+//          this.Message = this.Item.getText();
+//
+//          byte [] Data ;
+//          DatagramSocket datagramSocket = new DatagramSocket();
+//          Data = Message.getBytes();
+//          InetAddress inetAddress = InetAddress.getByName("localhost");
+//          DatagramPacket datagramPacketSend = new DatagramPacket(Data, Data.length,inetAddress,8080);
+//          datagramSocket.send(datagramPacketSend);
+//          datagramSocket.close();
+//          Connection connection = DriverManager.getConnection(URL,username,password);
+//          String query = "insert into MessageDatabase(Message) values (?)";
+//          PreparedStatement preparedStatement = null;
+//          preparedStatement = connection.prepareStatement(query);
+//          preparedStatement.setString(1,"Client :" + this.Message);
+//          int row = preparedStatement.executeUpdate();
+//          if (row != 0){
+//              Alert alertConfirm = new Alert(Alert.AlertType.INFORMATION);
+//              alertConfirm.setHeaderText("thanh cong");
+//              alertConfirm.setContentText("tin nhan da duoc gui");
+//              alertConfirm.show();
+//              this.Item.setText("");
+//          }else{
+//              System.out.println("loi");
+//          }
+//      }
+//      @Override
+//    public void run(){
+//          while (true) {
+//          try {
+//                 DatagramSocket datagramSocket = new DatagramSocket();
+//                  byte[] data = new byte[1024];
+//                  DatagramPacket datagramPacketRead = new DatagramPacket(data, data.length);
+//                  datagramSocket.receive(datagramPacketRead);
+//                  message = new String(datagramPacketRead.getData());
+//                  if (message.isEmpty()){
+//                      break;
+//                  }
+//                  System.out.println("tin nhan gui den" + message);
+//
+//                  this.message = "";
+//                  String queryOut = "Select Message from MessageDatabase";
+//                  Statement statement = null;
+//                  Connection connection = DriverManager.getConnection(URL, username, password);
+//                  statement = connection.createStatement();
+//                  ResultSet resultSet = statement.executeQuery(queryOut);
+//
+//                  while (resultSet.next()) {
+//                      this.message += resultSet.getString("Message") + "\n";
+//                  }
+//
+//                  for (int y = 0; y < this.message.length(); y++) {
+//                      this.ChatInput.setText(message);
+//                  }
+//              }catch (SQLException | IOException e) {
+//              throw new RuntimeException(e);
+//          }
+//          }
+//
+//      }
     }
-}
